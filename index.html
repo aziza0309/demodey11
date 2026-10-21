@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorldBite | Premium Food Delivery & Dining</title>
+    <style>
+        /* ==========================================================================
+           1. CSS VARIABLES & THEME CONFIGURATION
+           ========================================================================== */
+        :root {
+            /* Light Theme Variables */
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-glass: rgba(255, 255, 255, 0.85);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --accent-main: #e11d48; /* Premium Red */
+            --accent-hover: #be123c;
+            --gold-premium: #d97706;
+            --border-color: #e2e8f0;
+            --nav-height: 80px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme Variables */
+            --bg-primary: #0b0f19;
+            --bg-secondary: #111827;
+            --bg-glass: rgba(15, 23, 42, 0.85);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-main: #f43f5e;
+            --accent-hover: #e11d48;
+            --gold-premium: #fbbf24;
+            --border-color: #1e293b;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 25px -5px rgba(0,0,0,0.5);
+        }
+
+        /* ==========================================================================
+           2. RESET & GLOBAL STYLES
+           ========================================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        button { border: none; outline: none; cursor: pointer; font-family: inherit; }
+        img { max-width: 100%; height: auto; display: block; }
+
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ==========================================================================
+           3. TYPOGRAPHY & UTILITIES
+           ========================================================================== */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--text-primary);
+            transition: color 0.3s ease;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto 4rem auto;
+        }
+
+        .text-gold { color: var(--gold-premium); }
+        .text-accent { color: var(--accent-main); }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-main);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(225, 29, 72, 0.4);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(225, 29, 72, 0.6);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent-main);
+            color: var(--accent-main);
+        }
+
+        /* ==========================================================================
+           4. PRELOADER
+           ========================================================================== */
+        #preloader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-primary);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loader-ring {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--accent-main);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ==========================================================================
+           5. HEADER & NAVIGATION
+           ========================================================================== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: var(--bg-glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: var(--transition-smooth);
+        }
+
+        header.scrolled {
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 100%;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .logo svg {
+            width: 32px;
+            height: 32px;
+            fill: var(--accent-main);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            color: var(--text-secondary);
+            position: relative;
+            transition: var(--transition-smooth);
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text-primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent-main);
+            transition: var(--transition-smooth);
+        }
+
+        .nav-links a:hover::after, .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            transition: var(--transition-smooth);
+            position: relative;
+        }
+
+        .action-btn:hover {
+            background: var(--bg-secondary);
+        }
+
+        .action-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .badge-count {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: var(--accent-main);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--bg-primary);
+        }
+
+        /* Language Dropdown */
+        .lang-selector {
+            position: relative;
+        }
+
+        .lang-btn {
+            font-weight: 600;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+        }
+
+        /* ==========================================================================
+           6. HERO SECTION (Advanced Slider)
+           ========================================================================== */
+        .hero {
+            position: relative;
+            height: 100vh;
+            min-height: 700px;
+            padding-top: var(--nav-height);
+            background: var(--bg-secondary);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-bg-shapes {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: drift 20s infinite alternate;
+        }
+
+        .shape-1 {
+            width: 500px;
+            height: 500px;
+            background: rgba(225, 29, 72, 0.15);
+            top: -10%;
+            right: -5%;
+        }
+
+        .shape-2 {
+            width: 400px;
+            height: 400px;
+            background: rgba(217, 119, 6, 0.15);
+            bottom: -10%;
+            left: -5%;
+        }
+
+        @keyframes drift {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.5s;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(225, 29, 72, 0.1);
+            color: var(--accent-main);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 5vw, 4.5rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .hero-title span {
+            color: var(--accent-main);
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero-title span::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: var(--accent-main);
+            opacity: 0.2;
+            z-index: -1;
+            transform: skewX(-15deg);
+        }
+
+        .hero-desc {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Hero Image/Visuals */
+        .hero-visual {
+            position: relative;
+            height: 600px;
+            opacity: 0;
+            transform: scale(0.95);
+            animation: scaleIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.8s;
+        }
+
+        .main-plate {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 500px;
+            border-radius: 50%;
+            box-shadow: var(--shadow-lg);
+            z-index: 2;
+            animation: floating 6s ease-in-out infinite;
+        }
+
+        .floating-card {
+            position: absolute;
+            background: var(--bg-glass);
+            backdrop-filter: blur(10px);
+            padding: 1rem 1.5rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: 3;
+        }
+
+        .fc-1 { top: 15%; right: 0; animation: floating 5s ease-in-out infinite 1s; }
+        .fc-2 { bottom: 20%; left: -10%; animation: floating 7s ease-in-out infinite 0.5s; }
+
+        .fc-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(217, 119, 6, 0.1);
+            color: var(--gold-premium);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fc-text h4 { font-size: 0.875rem; margin-bottom: 0.25rem; }
+        .fc-text p { font-size: 0.75rem; color: var(--text-secondary); }
+
+        @keyframes floating {
+            0% { transform: translate(-50%, -50%) translateY(0); }
+            50% { transform: translate(-50%, -50%) translateY(-15px); }
+            100% { transform: translate(-50%, -50%) translateY(0); }
+        }
+        
+        /* Floating for non-centered elements */
+        .fc-1, .fc-2 { transform: translate(0, 0); }
+        @keyframes floating-alt {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0); }
+        }
+        .fc-1 { animation-name: floating-alt; }
+        .fc-2 { animation-name: floating-alt; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes scaleIn {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* ==========================================================================
+           7. FEATURES SECTION
+           ========================================================================== */
+        .features {
+            padding: 8rem 0;
+            background: var(--bg-primary);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition-bounce);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-main);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .f-icon-wrap {
+            width: 60px;
+            height: 60px;
+            background: rgba(225, 29, 72, 0.1);
+            color: var(--accent-main);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            transition: var(--transition-smooth);
+        }
+
+        .feature-card:hover .f-icon-wrap {
+            background: var(--accent-main);
+            color: white;
+            transform: rotate(10deg);
+        }
+
+        .f-icon-wrap svg { width: 30px; height: 30px; }
+        .feature-title { font-size: 1.25rem; margin-bottom: 1rem; }
+        .feature-desc { color: var(--text-secondary); font-size: 0.95rem; }
+
+        /* ==========================================================================
+           8. POPULAR MENU SECTION
+           ========================================================================== */
+        .menu-preview {
+            padding: 8rem 0;
+            background: var(--bg-secondary);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .food-card {
+            background: var(--bg-primary);
+            border-radius: 24px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: var(--transition-smooth);
+        }
+
+        .food-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-5px);
+        }
+
+        .food-img-wrap {
+            position: relative;
+            height: 240px;
+            overflow: hidden;
+        }
+
+        .food-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .food-card:hover .food-img-wrap img {
+            transform: scale(1.08);
+        }
+
+        .food-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--bg-glass);
+            backdrop-filter: blur(5px);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .food-fav {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            background: var(--bg-glass);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            border: none;
+            color: var(--text-secondary);
+        }
+
+        .food-fav:hover { color: var(--accent-main); transform: scale(1.1); }
+        .food-fav.active { color: var(--accent-main); }
+        .food-fav.active svg { fill: var(--accent-main); }
+
+        .food-info { padding: 1.5rem; }
+        .food-rating { display: flex; align-items: center; gap: 5px; color: var(--gold-premium); font-size: 0.9rem; margin-bottom: 0.5rem; font-weight: 600;}
+        .food-rating span { color: var(--text-secondary); font-weight: normal; }
+        .food-title { font-size: 1.25rem; margin-bottom: 0.5rem; }
+        .food-desc { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        
+        .food-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .food-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .btn-add {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: var(--text-primary);
+            color: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-add:hover {
+            background: var(--accent-main);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+
+        .view-all-wrap {
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        /* ==========================================================================
+           9. PREMIUM BIRTHDAY & PROMO SECTION
+           ========================================================================== */
+        .promo-section {
+            padding: 6rem 0;
+            background: var(--bg-primary);
+        }
+
+        .promo-banner {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 30px;
+            padding: 4rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Decorative patterns for promo */
+        .promo-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(217, 119, 6, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .promo-text { position: relative; z-index: 2; color: #fff; }
+        .promo-text h2 { color: #fff; font-size: 2.5rem; margin-bottom: 1.5rem; }
+        .promo-text h2 span { color: var(--gold-premium); }
+        .promo-text p { color: #cbd5e1; font-size: 1.1rem; margin-bottom: 2rem; }
+        
+        .promo-btn {
+            background: var(--gold-premium);
+            color: #0f172a;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            border: none;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.4);
+        }
+
+        .promo-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            background: #fbbf24;
+            box-shadow: 0 8px 25px rgba(217, 119, 6, 0.6);
+        }
+
+        .promo-img {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .promo-img img {
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            transform: rotate(5deg);
+            transition: var(--transition-smooth);
+        }
+
+        .promo-banner:hover .promo-img img {
+            transform: rotate(0deg) scale(1.05);
+        }
+
+        /* ==========================================================================
+           10. FOOTER
+           ========================================================================== */
+        footer {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 6rem 0 2rem 0;
+            border-top: 1px solid #1e293b;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 4rem;
+            margin-bottom: 4rem;
+        }
+
+        .footer-brand p {
+            color: #94a3b8;
+            margin-top: 1.5rem;
+            margin-bottom: 2rem;
+            max-width: 300px;
+        }
+
+        .social-links { display: flex; gap: 1rem; }
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+        }
+        .social-links a:hover { background: var(--accent-main); transform: translateY(-3px); }
+        .social-links svg { width: 18px; height: 18px; fill: #fff; }
+
+        .footer-title { font-size: 1.25rem; margin-bottom: 1.5rem; color: #fff; }
+        .footer-links li { margin-bottom: 0.75rem; }
+        .footer-links a { color: #94a3b8; transition: color 0.3s ease; }
+        .footer-links a:hover { color: var(--gold-premium); padding-left: 5px; }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid #1e293b;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* ==========================================================================
+           11. TOAST NOTIFICATIONS (Professional Queue System)
+           ========================================================================== */
+        #toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast-msg {
+            background: var(--bg-primary);
+            border-left: 4px solid var(--accent-main);
+            color: var(--text-primary);
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            min-width: 300px;
+        }
+
+        .toast-msg.show { transform: translateX(0); }
+        .toast-msg.success { border-color: #10b981; }
+        .toast-msg.secret { border-color: var(--gold-premium); background: #0f172a; color: #fbbf24; }
+        
+        /* ==========================================================================
+           12. SCROLL ANIMATIONS (Reveal utility classes)
+           ========================================================================== */
+        .reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        /* ==========================================================================
+           13. MEDIA QUERIES
+           ========================================================================== */
+        @media (max-width: 1024px) {
+            .hero-content { grid-template-columns: 1fr; text-align: center; }
+            .hero-text { margin: 0 auto; }
+            .hero-buttons { justify-content: center; }
+            .hero-visual { height: 400px; margin-top: 2rem; }
+            .promo-banner { grid-template-columns: 1fr; text-align: center; padding: 3rem 2rem; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed; top: var(--nav-height); left: -100%; width: 100%; height: calc(100vh - var(--nav-height));
+                background: var(--bg-primary); flex-direction: column; align-items: center; padding-top: 4rem;
+                transition: var(--transition-smooth);
+            }
+            .nav-links.active { left: 0; }
+            .mobile-menu-btn { display: block; background: none; border: none; color: var(--text-primary); cursor: pointer; }
+            .mobile-menu-btn svg { width: 28px; height: 28px; stroke: currentColor; stroke-width: 2; }
+            .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader-ring"></div>
+    </div>
+
+    <!-- Header Navigation -->
+    <header id="header">
+        <div class="container nav-wrapper">
+            <!-- Logo (Easter egg trigger on click) -->
+            <div class="logo" onclick="app.checkEasterEgg()">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                <span data-lang="brand">WorldBite</span>
+            </div>
+
+            <!-- Desktop Nav -->
+            <nav class="nav-links" id="navLinks">
+                <a href="index.html" class="active" data-lang="nav_home">Home</a>
+                <a href="menu.html" data-lang="nav_menu">Menu</a>
+                <a href="services.html" data-lang="nav_services">Services</a>
+                <a href="locations.html" data-lang="nav_locations">Locations</a>
+            </nav>
+
+            <!-- Actions -->
+            <div class="nav-actions">
+                <!-- Theme Toggle -->
+                <button class="action-btn" onclick="app.toggleTheme()" title="Toggle Theme">
+                    <svg id="themeIcon" viewBox="0 0 24 24"><path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                </button>
+                
+                <!-- Language Selector -->
+                <select class="lang-btn" id="langSelect" onchange="app.changeLang(this.value)">
+                    <option value="uz">O'Z</option>
+                    <option value="ru">РУ</option>
+                    <option value="en">EN</option>
+                </select>
+
+                <!-- Favorites -->
+                <button class="action-btn" onclick="window.location.href='cart.html'">
+                    <svg viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                    <span class="badge-count" id="favBadge">0</span>
+                </button>
+
+                <!-- Cart -->
+                <button class="action-btn" onclick="window.location.href='cart.html'">
+                    <svg viewBox="0 0 24 24"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    <span class="badge-count" id="cartBadge">0</span>
+                </button>
+
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-btn" onclick="app.toggleMobileMenu()">
+                    <svg viewBox="0 0 24 24" id="menuIcon"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-bg-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+            </div>
+            
+            <div class="container hero-content">
+                <div class="hero-text">
+                    <span class="hero-tag" data-lang="hero_tag">Premium Dining & Delivery</span>
+                    <h1 class="hero-title" data-lang="hero_title">Exquisite Culinary <br>Experience at <span>Home</span></h1>
+                    <p class="hero-desc" data-lang="hero_desc">Explore a world of flavors curated by master chefs. Delivered hot to your door, ready for pickup, or served in our luxury dining halls.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="window.location.href='menu.html'">
+                            <span data-lang="btn_explore">Explore Menu</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
+                        <button class="btn btn-outline" onclick="window.location.href='services.html'">
+                            <span data-lang="btn_book">Book a Table</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="hero-visual">
+                    <!-- Placeholder for high quality food image -->
+                    <img src="https://images.unsplash.com/photo-1544025162-8311029da9f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Gourmet Dish" class="main-plate" style="border-radius: 50%; border: 8px solid var(--bg-glass);">
+                    
+                    <div class="floating-card fc-1">
+                        <div class="fc-icon">⏱️</div>
+                        <div class="fc-text">
+                            <h4 data-lang="fc_fast">Ultra Fast</h4>
+                            <p data-lang="fc_fast_sub">Under 30 mins</p>
+                        </div>
+                    </div>
+
+                    <div class="floating-card fc-2">
+                        <div class="fc-icon">⭐</div>
+                        <div class="fc-text">
+                            <h4 data-lang="fc_rating">4.9/5 Rating</h4>
+                            <p data-lang="fc_rating_sub">10k+ Reviews</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <div class="container">
+                <h2 class="section-title reveal" data-lang="feat_title">Why Choose Us</h2>
+                <p class="section-subtitle reveal" data-lang="feat_sub">We blend culinary mastery with cutting-edge logistics to provide an unparalleled dining and delivery experience.</p>
+
+                <div class="features-grid">
+                    <div class="feature-card reveal reveal-delay-1">
+                        <div class="f-icon-wrap">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </div>
+                        <h3 class="feature-title" data-lang="f1_title">Lightning Delivery</h3>
+                        <p class="feature-desc" data-lang="f1_desc">Advanced routing algorithms ensure your meal arrives piping hot, exactly when promised.</p>
+                    </div>
+                    
+                    <div class="feature-card reveal reveal-delay-2">
+                        <div class="f-icon-wrap">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                        </div>
+                        <h3 class="feature-title" data-lang="f2_title">Michelin-Level Chefs</h3>
+                        <p class="feature-desc" data-lang="f2_desc">Our kitchen is led by internationally trained experts bringing global authenticity to every plate.</p>
+                    </div>
+
+                    <div class="feature-card reveal reveal-delay-3">
+                        <div class="f-icon-wrap">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                        </div>
+                        <h3 class="feature-title" data-lang="f3_title">Luxury Dine-In</h3>
+                        <p class="feature-desc" data-lang="f3_desc">Skip the wait. Reserve a premium table through our system for an exclusive restaurant experience.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Menu Highlights -->
+        <section class="menu-preview">
+            <div class="container">
+                <h2 class="section-title reveal" data-lang="menu_title">Chef's Signatures</h2>
+                <p class="section-subtitle reveal" data-lang="menu_sub">A curated selection of our most requested culinary masterpieces.</p>
+
+                <div class="menu-grid" id="menuGrid">
+                    <!-- Products rendered via JS to keep HTML clean and dynamic -->
+                </div>
+
+                <div class="view-all-wrap reveal">
+                    <button class="btn btn-outline" onclick="window.location.href='menu.html'">
+                        <span data-lang="btn_full_menu">View Full Menu</span>
+                        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Premium Birthday / Promo Section -->
+        <section class="promo-section">
+            <div class="container">
+                <div class="promo-banner reveal">
+                    <div class="promo-text">
+                        <h2 data-lang="promo_title">Celebrate Your <span>Special Day</span></h2>
+                        <p data-lang="promo_desc">Let us make your birthday unforgettable. Claim your complimentary artisan cake, prepared by our executive pastry chef. Available for dine-in, pickup, or delivery with your order.</p>
+                        <button class="promo-btn" onclick="app.claimBirthdayGift()">
+                            <span data-lang="btn_claim_cake">Claim Signature Cake</span>
+                        </button>
+                    </div>
+                    <div class="promo-img">
+                        <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Gourmet Cake">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        WorldBite
+                    </div>
+                    <p data-lang="foot_desc">Redefining global cuisine delivery and premium dining experiences. Taste the world without boundaries.</p>
+                    <div class="social-links">
+                        <a href="#"><svg viewBox="0 0 24 24"><path d="M22.675 0h-21.35C.597 0 0 .597 0 1.325v21.351C0 23.403.597 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.597 1.323-1.325V1.325C24 .597 23.403 0 22.675 0z"/></svg></a>
+                        <a href="#"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+                        <a href="#"><svg viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="footer-title" data-lang="foot_links">Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="menu.html" data-lang="nav_menu">Menu</a></li>
+                        <li><a href="services.html" data-lang="nav_services">Services</a></li>
+                        <li><a href="locations.html" data-lang="nav_locations">Locations</a></li>
+                        <li><a href="#" data-lang="foot_careers">Careers</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-title" data-lang="foot_legal">Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" data-lang="foot_terms">Terms & Conditions</a></li>
+                        <li><a href="#" data-lang="foot_privacy">Privacy Policy</a></li>
+                        <li><a href="#" data-lang="foot_cookies">Cookie Policy</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-title" data-lang="foot_contact">Contact</h4>
+                    <ul class="footer-links">
+                        <li><a href="mailto:support@worldbite.uz">support@worldbite.uz</a></li>
+                        <li><a href="tel:+998901234567">+998 90 123 45 67</a></li>
+                        <li data-lang="foot_address">Tashkent, Amir Temur avenue 101, Business Center "Premium"</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 WorldBite Express. All rights reserved.</p>
+                <p data-lang="foot_developed">Engineered by Senior Dev Team</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- ==========================================================================
+         14. JAVASCRIPT (Application Logic)
+         ========================================================================== -->
+    <script>
+        // Sample Products for Bosh Sahifa (Mock Database)
+        const productsDB = [
+            { id: 'p1', img: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=500', titleUz: 'Wagyu Sushi Set', titleRu: 'Сет Вагю Суши', titleEn: 'Wagyu Sushi Set', desc: 'Premium grade wagyu beef with truffle oil.', price: 450000, tag: 'Signature', rating: 4.9 },
+            { id: 'p2', img: 'https://images.unsplash.com/photo-1604068549290-dea0e4a305ca?w=500', titleUz: 'Truffle Pasta', titleRu: 'Трюфельная Паста', titleEn: 'Truffle Pasta', desc: 'Handmade fettuccine, black truffle, parmesan.', price: 220000, tag: 'Italian', rating: 4.8 },
+            { id: 'p3', img: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=500', titleUz: 'Tomahawk Steak', titleRu: 'Стейк Томагавк', titleEn: 'Tomahawk Steak', desc: 'Dry-aged beef, herb butter, roasted veg.', price: 850000, tag: 'Grill', rating: 5.0 }
+        ];
+
+        // Dictionaries for Localization (Comprehensive)
+        const dict = {
+            uz: {
+                brand: "WorldBite",
+                nav_home: "Bosh sahifa", nav_menu: "Menyu", nav_services: "Xizmatlar", nav_locations: "Manzillar",
+                hero_tag: "Premium Ovqatlanish & Yetkazish",
+                hero_title: "Uyda <span>Jahon Oshxonasi</span> Ta'midan Bahramand Bo'ling",
+                hero_desc: "Usta oshpazlar tomonidan tayyorlangan betakror taomlar olami. Uyingizga issiq holda yetkazib beramiz yoki hashamatli restoranimizda kutib qolamiz.",
+                btn_explore: "Menyuni Ko'rish", btn_book: "Stol Band Qilish",
+                fc_fast: "Juda Tez", fc_fast_sub: "30 daqiqadan kam", fc_rating: "4.9/5 Reyting", fc_rating_sub: "10k+ Sharhlar",
+                feat_title: "Nima uchun biz?", feat_sub: "Biz oshpazlik mahoratini ilg'or logistika bilan birlashtirib, misli ko'rilmagan xizmatni taqdim etamiz.",
+                f1_title: "Tezkor Yetkazib Berish", f1_desc: "Maxsus marshrutlash algoritmlari orqali taomingiz va'da qilingan vaqtda issiq holda yetib boradi.",
+                f2_title: "Mishelin Darajasidagi Oshpazlar", f2_desc: "Oshxonamiz xalqaro darajada malaka oshirgan mutaxassislar tomonidan boshqariladi.",
+                f3_title: "Premium Restoran", f3_desc: "Navbat kutmang. Eksklyuziv restoran tajribasi uchun tizimimiz orqali premium stol band qiling.",
+                menu_title: "Oshpazning Imzosi", menu_sub: "Mijozlarimiz eng ko'p sevib iste'mol qiladigan shoh asarlar to'plami.",
+                btn_add_cart: "Savatga qo'shish", btn_full_menu: "To'liq Menyuni Ko'rish",
+                promo_title: "Maxsus <span>Kuningizni</span> Nishonlang",
+                promo_desc: "Tug'ilgan kuningizni unutilmas qilamiz. Bosh qandolatchimiz tomonidan tayyorlangan bepul tortingizni oling. Yetkazib berish yoki restoranda qabul qilish mumkin.",
+                btn_claim_cake: "Maxsus Tortni Olish",
+                foot_desc: "Jahon oshxonasi yetkazib berish va premium ovqatlanishni qayta kashf etamiz. Chegaralarsiz dunyo ta'mi.",
+                foot_links: "Tezkor Havolalar", foot_careers: "Vakansiyalar", foot_legal: "Huquqiy Ma'lumot",
+                foot_terms: "Foydalanish shartlari", foot_privacy: "Maxfiylik siyosati", foot_cookies: "Kuki siyosati",
+                foot_contact: "Aloqa", foot_address: "Toshkent sh, Amir Temur shoh ko'chasi 101, 'Premium' Biznes Markazi",
+                foot_developed: "Senior Dasturchilar Jamoasi Tomonidan Yaratildi",
+                toast_cart: "mahsuloti savatga qo'shildi", toast_cake: "Tug'ilgan kun torti rasmiylashtirildi! 🎂", toast_easter: "VIPGIFT promo-kodi faollashtirildi! 🎁"
+            },
+            ru: {
+                brand: "WorldBite",
+                nav_home: "Главная", nav_menu: "Меню", nav_services: "Услуги", nav_locations: "Локации",
+                hero_tag: "Премиум Ресторан и Доставка",
+                hero_title: "Изысканный вкус <span>мира</span> у вас дома",
+                hero_desc: "Откройте для себя мир вкусов от шеф-поваров. Доставим горячим прямо к двери или обслужим в нашем роскошном зале.",
+                btn_explore: "Смотреть меню", btn_book: "Забронировать стол",
+                fc_fast: "Сверхбыстро", fc_fast_sub: "Менее 30 минут", fc_rating: "Рейтинг 4.9/5", fc_rating_sub: "10k+ Отзывов",
+                feat_title: "Почему выбирают нас", feat_sub: "Мы объединяем кулинарное мастерство с передовой логистикой для непревзойденного сервиса.",
+                f1_title: "Молниеносная доставка", f1_desc: "Алгоритмы маршрутизации гарантируют, что ваше блюдо прибудет горячим точно в срок.",
+                f2_title: "Шеф-повара уровня Мишлен", f2_desc: "Нашей кухней руководят эксперты с международной подготовкой.",
+                f3_title: "Роскошный ресторан", f3_desc: "Забронируйте премиум-столик через нашу систему для эксклюзивного отдыха без очередей.",
+                menu_title: "Фирменные блюда", menu_sub: "Тщательно отобранная коллекция наших самых востребованных кулинарных шедевров.",
+                btn_add_cart: "В корзину", btn_full_menu: "Смотреть всё меню",
+                promo_title: "Отпразднуйте свой <span>Особый День</span>",
+                promo_desc: "Сделайте свой день рождения незабываемым. Получите бесплатный торт от нашего шеф-кондитера при заказе или брони стола.",
+                btn_claim_cake: "Получить Торт",
+                foot_desc: "Переосмысление доставки блюд мировой кухни. Вкус мира без границ.",
+                foot_links: "Быстрые ссылки", foot_careers: "Карьера", foot_legal: "Правовая информация",
+                foot_terms: "Условия использования", foot_privacy: "Политика конфиденциальности", foot_cookies: "Политика файлов cookie",
+                foot_contact: "Контакты", foot_address: "г. Ташкент, пр. Амира Темура 101, Бизнес Центр 'Premium'",
+                foot_developed: "Разработано командой Senior разработчиков",
+                toast_cart: "добавлено в корзину", toast_cake: "Праздничный торт оформлен! 🎂", toast_easter: "Секретный код VIPGIFT активирован! 🎁"
+            },
+            en: {
+                brand: "WorldBite",
+                nav_home: "Home", nav_menu: "Menu", nav_services: "Services", nav_locations: "Locations",
+                hero_tag: "Premium Dining & Delivery",
+                hero_title: "Exquisite Culinary <br>Experience at <span>Home</span>",
+                hero_desc: "Explore a world of flavors curated by master chefs. Delivered hot to your door, ready for pickup, or served in our luxury dining halls.",
+                btn_explore: "Explore Menu", btn_book: "Book a Table",
+                fc_fast: "Ultra Fast", fc_fast_sub: "Under 30 mins", fc_rating: "4.9/5 Rating", fc_rating_sub: "10k+ Reviews",
+                feat_title: "Why Choose Us", feat_sub: "We blend culinary mastery with cutting-edge logistics to provide an unparalleled dining and delivery experience.",
+                f1_title: "Lightning Delivery", f1_desc: "Advanced routing algorithms ensure your meal arrives piping hot, exactly when promised.",
+                f2_title: "Michelin-Level Chefs", f2_desc: "Our kitchen is led by internationally trained experts bringing global authenticity to every plate.",
+                f3_title: "Luxury Dine-In", f3_desc: "Skip the wait. Reserve a premium table through our system for an exclusive restaurant experience.",
+                menu_title: "Chef's Signatures", menu_sub: "A curated selection of our most requested culinary masterpieces.",
+                btn_add_cart: "Add to cart", btn_full_menu: "View Full Menu",
+                promo_title: "Celebrate Your <span>Special Day</span>",
+                promo_desc: "Let us make your birthday unforgettable. Claim your complimentary artisan cake, prepared by our executive pastry chef. Available for dine-in, pickup, or delivery.",
+                btn_claim_cake: "Claim Signature Cake",
+                foot_desc: "Redefining global cuisine delivery and premium dining experiences. Taste the world without boundaries.",
+                foot_links: "Quick Links", foot_careers: "Careers", foot_legal: "Legal",
+                foot_terms: "Terms & Conditions", foot_privacy: "Privacy Policy", foot_cookies: "Cookie Policy",
+                foot_contact: "Contact", foot_address: "Tashkent, Amir Temur avenue 101, Business Center 'Premium'",
+                foot_developed: "Engineered by Senior Dev Team",
+                toast_cart: "added to cart", toast_cake: "Signature cake claimed! 🎂", toast_easter: "Secret code VIPGIFT activated! 🎁"
+            }
+        };
+
+        // Main Application Class (OOP Approach)
+        class AppManager {
+            constructor() {
+                this.lang = localStorage.getItem('wb_lang') || 'en';
+                this.theme = localStorage.getItem('wb_theme') || 'light';
+                this.cart = JSON.parse(localStorage.getItem('wb_cart')) || [];
+                this.favs = JSON.parse(localStorage.getItem('wb_favs')) || [];
+                this.easterEggCounter = 0;
+                
+                this.init();
+            }
+
+            init() {
+                this.applyTheme(this.theme);
+                this.changeLang(this.lang);
+                document.getElementById('langSelect').value = this.lang;
+                this.renderProducts();
+                this.updateBadges();
+                this.initScrollReveal();
+                this.handleHeaderScroll();
+
+                // Remove Preloader
+                window.addEventListener('load', () => {
+                    setTimeout(() => {
+                        const preloader = document.getElementById('preloader');
+                        preloader.style.opacity = '0';
+                        setTimeout(() => preloader.style.display = 'none', 500);
+                    }, 500); // Fake delay for professional feel
+                });
+            }
+
+            /* --- UI & Theming --- */
+            toggleTheme() {
+                this.theme = this.theme === 'light' ? 'dark' : 'light';
+                this.applyTheme(this.theme);
+                localStorage.setItem('wb_theme', this.theme);
+            }
+
+            applyTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                const iconPath = theme === 'dark' 
+                    ? '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>' // Sun
+                    : '<path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>'; // Moon
+                document.getElementById('themeIcon').innerHTML = iconPath;
+            }
+
+            /* --- Localization --- */
+            changeLang(langCode) {
+                this.lang = langCode;
+                localStorage.setItem('wb_lang', langCode);
+                
+                document.querySelectorAll('[data-lang]').forEach(el => {
+                    const key = el.getAttribute('data-lang');
+                    if (dict[this.lang][key]) {
+                        el.innerHTML = dict[this.lang][key];
+                    }
+                });
+                // Re-render products to translate titles
+                this.renderProducts();
+            }
+
+            /* --- Cart & Favorites --- */
+            toggleFav(id) {
+                const index = this.favs.indexOf(id);
+                if (index > -1) {
+                    this.favs.splice(index, 1);
+                } else {
+                    this.favs.push(id);
+                }
+                localStorage.setItem('wb_favs', JSON.stringify(this.favs));
+                this.updateBadges();
+                this.renderProducts(); // Update heart icon state
+            }
+
+            addToCart(id, title) {
+                const item = this.cart.find(i => i.id === id);
+                if (item) {
+                    item.qty++;
+                } else {
+                    const product = productsDB.find(p => p.id === id);
+                    this.cart.push({ id, price: product.price, qty: 1 });
+                }
+                localStorage.setItem('wb_cart', JSON.stringify(this.cart));
+                this.updateBadges();
+                this.showToast(`${title} ${dict[this.lang].toast_cart}`, 'success');
+            }
+
+            updateBadges() {
+                document.getElementById('cartBadge').innerText = this.cart.reduce((sum, item) => sum + item.qty, 0);
+                document.getElementById('favBadge').innerText = this.favs.length;
+            }
+
+            /* --- Actions & Features --- */
+            claimBirthdayGift() {
+                const hasCake = this.cart.find(i => i.id === 'gift_cake');
+                if (!hasCake) {
+                    this.cart.push({ id: 'gift_cake', price: 0, qty: 1, type: 'gift' });
+                    localStorage.setItem('wb_cart', JSON.stringify(this.cart));
+                    this.updateBadges();
+                    this.showToast(dict[this.lang].toast_cake, 'success');
+                }
+            }
+
+            checkEasterEgg() {
+                this.easterEggCounter++;
+                if (this.easterEggCounter >= 5) {
+                    localStorage.setItem('wb_secret_code', 'VIPGIFT');
+                    this.showToast(dict[this.lang].toast_easter, 'secret');
+                    this.easterEggCounter = 0;
+                }
+            }
+
+            /* --- Rendering Data --- */
+            renderProducts() {
+                const grid = document.getElementById('menuGrid');
+                grid.innerHTML = '';
+
+                productsDB.forEach(prod => {
+                    // Get correct title based on language
+                    const title = prod[`title${this.lang.charAt(0).toUpperCase() + this.lang.slice(1)}`] || prod.titleEn;
+                    const isFav = this.favs.includes(prod.id);
+                    const favIconPath = isFav 
+                        ? '<path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>'
+                        : '<path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>';
+
+                    const html = `
+                        <div class="food-card reveal reveal-delay-1">
+                            <div class="food-img-wrap">
+                                <div class="food-badge">${prod.tag}</div>
+                                <button class="food-fav ${isFav ? 'active' : ''}" onclick="app.toggleFav('${prod.id}')">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${favIconPath}</svg>
+                                </button>
+                                <img src="${prod.img}" alt="${title}">
+                            </div>
+                            <div class="food-info">
+                                <div class="food-rating">
+                                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                    ${prod.rating} <span>(100+)</span>
+                                </div>
+                                <h3 class="food-title">${title}</h3>
+                                <p class="food-desc">${prod.desc}</p>
+                                <div class="food-footer">
+                                    <div class="food-price">${prod.price.toLocaleString()} UZS</div>
+                                    <button class="btn-add" onclick="app.addToCart('${prod.id}', '${title}')">
+                                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += html;
+                });
+            }
+
+            /* --- UI Interactions --- */
+            toggleMobileMenu() {
+                document.getElementById('navLinks').classList.toggle('active');
+            }
+
+            handleHeaderScroll() {
+                const header = document.getElementById('header');
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) header.classList.add('scrolled');
+                    else header.classList.remove('scrolled');
+                });
+            }
+
+            initScrollReveal() {
+                const options = { threshold: 0.1, rootMargin: "0px 0px -50px 0px" };
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('active');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, options);
+
+                setTimeout(() => {
+                    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+                }, 1000);
+            }
+
+            showToast(message, type = 'default') {
+                const container = document.getElementById('toast-container');
+                const toast = document.createElement('div');
+                toast.className = `toast-msg ${type}`;
+                
+                let icon = '';
+                if(type === 'success') icon = '<svg width="20" height="20" fill="none" stroke="#10b981" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>';
+                if(type === 'secret') icon = '<svg width="20" height="20" fill="none" stroke="#fbbf24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>';
+
+                toast.innerHTML = `${icon} <span>${message}</span>`;
+                container.appendChild(toast);
+
+                // Trigger reflow to start animation
+                void toast.offsetWidth;
+                toast.classList.add('show');
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    setTimeout(() => toast.remove(), 400);
+                }, 3000);
+            }
+        }
+
+        // Instantiate App
+        const app = new AppManager();
+
+    </script>
+</body>
+</html>
